@@ -102,11 +102,16 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    "/var/www/static/",
-]
+STATIC_URL = "/static/"
+STATIC_ROOT = "/app/static"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "/app/media"
+
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
 
 # Users application
 AUTH_USER_MODEL = 'users.User'
@@ -116,6 +121,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/users/login'
+
 LOGOUT_REDIRECT_URL = '/'
 
 
