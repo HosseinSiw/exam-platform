@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+
+        <form method="post" class="start-exam-card">
+            {% csrf_token %}
+
+            <h3 class="fw-bold mb-3 text-center">
+                📝 {{ exam.title }}
+            </h3>
+
+            <div class="exam-meta mb-4 text-center">
+                <span class="badge bg-primary fs-6">
+                    مدت آزمون: {{ exam.duration_minutes }} دقیقه
+                </span>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>توجه:</strong>
+                با زدن دکمه «شروع آزمون»، تایمر فعال می‌شود و
+                خروج از صفحه به معنی ثبت نهایی آزمون خواهد بود.
+            </div>
+
+            <ul class="exam-rules list-unstyled mb-4">
+                <li>⏱ تایمر بلافاصله پس از شروع فعال می‌شود</li>
+                <li>🚫 امکان توقف یا شروع مجدد وجود ندارد</li>
+                <li>✅ پاسخ‌های ثبت‌شده ذخیره خواهند شد</li>
+            </ul>
+
+            <div class="d-grid mt-4">
+                <button type="submit"
+                        class="btn btn-success btn-lg"
+                        onclick="this.disabled=true; this.innerText='در حال ورود...'; this.form.submit();">
+                    شروع آزمون 🚀
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

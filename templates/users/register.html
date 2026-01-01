@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 400px;">
+    <h4 class="mb-4">ثبت‌نام</h4>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            {{ form.mobile.label_tag }}
+            {{ form.mobile }}
+            {{ form.mobile.errors }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {{ form.password1.errors }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+        </div>
+
+        <button class="btn btn-primary w-100">
+            ثبت‌نام
+        </button>
+    </form>
+</div>
+{% endblock %}

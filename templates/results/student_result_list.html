@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <h3 class="mb-4 fw-bold">📊 نتایج آزمون‌های من</h3>
+
+  {% if student_exams %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>آزمون</th>
+            <th>وضعیت</th>
+            <th>نمره</th>
+            <th>درصد</th>
+            <th>تاریخ</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for se in student_exams %}
+          <tr>
+            <td class="fw-semibold">{{ se.exam.title }}</td>
+
+            <td>
+              {% if se.graded_at %}
+                <span class="badge bg-success">✅ تصحیح شده</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">⏳ در حال تصحیح توسط سیستم</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if se.graded_at %}
+                {{ se.score }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+
+            <td>
+              {% if se.graded_at %}
+                {{ se.percentage|floatformat:2 }}٪
+              {% else %}
+                —
+              {% endif %}
+            </td>
+
+            <td class="text-muted">
+              {{ se.finished_at|date:"Y/m/d H:i" }}
+            </td>
+
+            <td class="text-end">
+              {% if se.graded_at %}
+                <a href="{% url 'results:student_result_detail' se.pk %}"
+                   class="btn btn-sm btn-outline-primary">
+                  مشاهده
+                </a>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  {% else %}
+    <div class="alert alert-info text-center py-4">
+      <h6 class="mb-1">📄 نتیجه‌ای موجود نیست</h6>
+      <small class="text-muted">
+        پس از شرکت در آزمون، نتایج شما در این بخش نمایش داده می‌شود.
+      </small>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

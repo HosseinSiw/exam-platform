@@ -1,0 +1,148 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+
+<!-- ===== Messages ===== -->
+{% for message in messages %}
+    <div class="alert alert-success text-center shadow-sm">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<!-- ===== Hero Section ===== -->
+<section class="hero-section mb-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6 text-center text-lg-start">
+
+            <h1 class="display-5 fw-bold mb-3">
+                پلتفرم آزمون آنلاین
+            </h1>
+
+            <p class="lead text-muted mb-4">
+                آزمون‌های خود را به‌صورت آنلاین برگزار کنید،
+                نتایج را دقیق و سریع دریافت کنید
+                و عملکرد دانشجویان را حرفه‌ای تحلیل نمایید.
+            </p>
+
+            <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'courses:student_list' %}"
+                   class="btn btn-primary btn-lg px-4">
+                    مشاهده درس ها
+                </a>
+                <a href="{% url 'results:student_results_list' %}"
+                   class="btn btn-outline-secondary btn-lg px-4">
+                    مشاهده نتایج
+                </a>
+                {% else %}
+                <a href="{% url 'users:login' %}"
+                   class="btn btn-primary btn-lg px-4">
+                    ورود
+                </a>
+                <a href="{% url 'users:register' %}"
+                   class="btn btn-outline-secondary btn-lg px-4">
+                    ثبت نام
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="col-lg-6 text-center">
+            <div class="hero-card shadow-lg">
+                <div class="hero-placeholder">
+                    📊 📘 ⏱️
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Features ===== -->
+<section class="mb-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">چرا Exam Platform؟</h2>
+        <p class="text-muted">
+            سریع، پایدار و مناسب مقیاس بالا
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <div class="feature-icon">⚡</div>
+                <h5>برگزاری سریع آزمون</h5>
+                <p class="text-muted">
+                    بدون رفرش و با مدیریت دقیق زمان و ارسال خودکار.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <div class="feature-icon">🧮</div>
+                <h5>نمره‌دهی هوشمند</h5>
+                <p class="text-muted">
+                    محاسبه خودکار نتایج با پایداری بالا و تأخیر صفر.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="feature-card h-100">
+                <div class="feature-icon">📈</div>
+                <h5>تحلیل نتایج</h5>
+                <p class="text-muted">
+                    مشاهده درصد، نمودار و جزئیات عملکرد هر آزمون.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== Stats ===== -->
+<section class="stats-section text-center mb-5">
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3>✔️</h3>
+                <p class="fw-bold">پایدار و قابل اطمینان</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3>⏱️</h3>
+                <p class="fw-bold">مدیریت دقیق زمان</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h3>📊</h3>
+                <p class="fw-bold">گزارش‌های حرفه‌ای</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section text-center">
+    <h2 class="fw-bold mb-3">
+        آماده شروع هستید؟
+    </h2>
+    <p class="text-muted mb-4">
+        درس هایتان را بررسی کنید و در آزمون های فعالش شرکت کنید.
+    </p>
+
+    <a href="{% url 'courses:student_list' %}"
+       class="btn btn-success btn-lg px-5">
+        شروع کنید 🚀
+    </a>
+</section>
+
+{% endblock content %}

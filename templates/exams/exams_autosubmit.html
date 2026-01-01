@@ -1,0 +1,71 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <div class="card shadow-sm text-center">
+    <div class="card-body">
+
+      <h4 class="mb-3 text-danger">⏰ زمان آزمون به پایان رسید</h4>
+
+      <p class="text-muted mb-4">
+        پاسخ‌های شما ذخیره شده و آزمون در حال ثبت نهایی است.
+        لطفاً این صفحه را نبندید.
+      </p>
+
+      <!-- Loader -->
+      <div class="spinner-border text-danger mb-4" role="status">
+        <span class="visually-hidden">در حال ارسال...</span>
+      </div>
+
+      <!-- Fallback manual submit -->
+      <form method="post"
+            action="{% url 'exams:finish' class_group.id exam.id %}"
+            id="finish-form">
+        {% csrf_token %}
+
+        <noscript>
+          <button type="submit" class="btn btn-danger">
+            ثبت نهایی آزمون
+          </button>
+        </noscript>
+      </form>
+
+      <small class="text-muted d-block mt-3">
+        اگر ارسال خودکار انجام نشد، دکمه زیر را بزنید.
+      </small>
+
+      <button class="btn btn-outline-danger mt-2"
+              onclick="document.getElementById('finish-form').submit();">
+        ثبت نهایی آزمون
+      </button>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const form = document.getElementById('finish-form');
+    let submitted = false;
+
+    function submitOnce() {
+        if (submitted) return;
+        submitted = true;
+        form.submit();
+    }
+
+    // auto-submit after 1 second
+    setTimeout(submitOnce, 1000);
+
+    // safety net: prevent double submit
+    form.addEventListener('submit', function () {
+        if (submitted) return false;
+        submitted = true;
+    });
+})();
+</script>
+{% endblock %}

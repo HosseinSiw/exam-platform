@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<!-- ===== Course Header ===== -->
+<div class="course-header mb-5">
+    <h2 class="fw-bold mb-2">
+        {{ course.title }}
+    </h2>
+
+    {% if course.description %}
+        <p class="text-muted">
+            {{ course.description }}
+        </p>
+    {% endif %}
+</div>
+
+<!-- ===== Class Groups ===== -->
+<div class="mb-4">
+    <h4 class="fw-bold">
+        🎓 کلاس‌های شما
+    </h4>
+    <p class="text-muted">
+        آزمون‌های هر کلاس را مشاهده کنید
+    </p>
+</div>
+
+<div class="row g-4">
+
+    {% for class in class_groups %}
+        <div class="col-md-6 col-lg-4">
+            <div class="class-card h-100">
+
+                <div class="class-card-body">
+                    <h5 class="fw-bold mb-3">
+                        {{ class.title }}
+                    </h5>
+
+                    <p class="text-muted small mb-4">
+                        ورود به لیست آزمون‌های این کلاس
+                    </p>
+
+                    <a href="{% url 'exams:class-exam-list' class.id %}"
+                       class="btn btn-primary w-100">
+                        مشاهده آزمون‌ها
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    {% empty %}
+
+        <div class="col-12">
+            <div class="empty-state text-center p-5">
+                <div class="empty-icon mb-3">🚫</div>
+                <h5 class="mb-2">
+                    شما در هیچ کلاسی از این دوره عضو نیستید
+                </h5>
+                <p class="text-muted">
+                    برای شرکت در آزمون‌ها ابتدا باید در یک کلاس ثبت‌نام شوید.
+                </p>
+            </div>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

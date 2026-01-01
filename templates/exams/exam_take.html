@@ -1,0 +1,98 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<!-- ===== Header ===== -->
+<div class="exam-header mb-4">
+    <h3 class="fw-bold">{{ exam.title }}</h3>
+
+    <div id="exam-timer"
+         class="alert alert-warning text-center fw-bold mt-3">
+        ⏱ زمان باقی‌مانده:
+        <span id="time-remaining">--:--</span>
+    </div>
+</div>
+
+<!-- ===== Exam Form ===== -->
+<form method="post" id="exam-form">
+    {% csrf_token %}
+
+    {% for question in questions %}
+        <div class="question-card mb-4">
+
+            <div class="question-title fw-bold mb-3">
+                {{ forloop.counter }}. {{ question.text }}
+            </div>
+
+            {% for option in question.options.all %}
+                <label class="option-item d-block">
+                    <input
+                        type="radio"
+                        name="question_{{ question.id }}"
+                        value="{{ option.id }}"
+                        {% if answers_dict|get_item:question.id == option.id %}
+                            checked
+                        {% endif %}
+                    >
+                    {{ option.text }}
+                </label>
+            {% endfor %}
+
+        </div>
+    {% empty %}
+        <p class="text-muted">سؤالی برای این آزمون ثبت نشده است.</p>
+    {% endfor %}
+</form>
+
+<!-- ===== Finish Exam ===== -->
+<div class="text-end mt-5">
+    <form method="post"
+          action="{% url 'exams:finish' class_group.id exam.id %}"
+          id="finish-form">
+        {% csrf_token %}
+        <button
+            type="submit"
+            class="btn btn-danger btn-lg"
+            onclick="return confirm('آیا مطمئن هستید که می‌خواهید آزمون را پایان دهید؟');">
+            پایان آزمون
+        </button>
+    </form>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+(function () {
+    const durationMinutes = {{ exam.duration_minutes|default:0 }};
+    if (!durationMinutes) return;
+
+    const startedAt = new Date("{{ student_exam.started_at|date:'c' }}");
+    const endTime = new Date(
+        startedAt.getTime() + durationMinutes * 60 * 1000
+    );
+
+    const timerEl = document.getElementById('time-remaining');
+    const finishForm = document.getElementById('finish-form');
+
+    function tick() {
+        const now = new Date();
+        let diff = Math.floor((endTime - now) / 1000);
+
+        if (diff <= 0) {
+            finishForm.submit(); // ✅ POST auto-submit
+            return;
+        }
+
+        const minutes = Math.floor(diff / 60);
+        const seconds = diff % 60;
+
+        timerEl.textContent =
+            String(minutes).padStart(2, '0') + ':' +
+            String(seconds).padStart(2, '0');
+    }
+
+    tick();
+    setInterval(tick, 1000);
+})();
+</script>
+{% endblock %}

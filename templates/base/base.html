@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Exam Platform{% endblock %}</title>
+
+    <!-- Bootstrap 5 RTL -->
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" 
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+
+<nav class="navbar navbar-expand-lg main-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+             <span>Online Exame platform</span>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <ul class="navbar-nav me-auto gap-lg-1">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">خانه</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courses:student_list' %}">
+                            آزمون‌ها
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'results:student_results_list' %}">
+                            نتایج
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+            <ul class="navbar-nav align-items-lg-center gap-2">
+                {% if user.is_authenticated %}
+                    <li class="nav-item text-light opacity-75 small">
+                        خوش آمدید
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm px-3"
+                           href="{% url 'users:logout' %}">
+                            خروج
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-primary btn-sm px-3"
+                           href="{% url 'users:login' %}">
+                            ورود
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+
+<!-- ===== Main Content ===== -->
+<main class="flex-fill main-bg">
+    <div class="container py-5">
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+
+<!-- ===== Footer ===== -->
+<footer class="main-footer mt-auto">
+    <div class="container py-4">
+        <div class="row gy-3 align-items-center">
+
+            <div class="col-md-6 text-center text-md-start">
+                © {% now "Y" %} Exam Platform
+                <div class="small text-muted">
+                    پلتفرم آزمون آنلاین
+                </div>
+            </div>
+
+            <div class="col-md-6 text-center text-md-end text-muted small">
+                Built for scalable online exams
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- pie-chart package -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

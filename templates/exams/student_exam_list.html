@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<!-- ===== Page Header ===== -->
+<div class="mb-4">
+    <h3 class="fw-bold">📝 آزمون‌های این کلاس</h3>
+    <p class="text-muted">
+        لیست آزمون‌های فعال و ثبت شده برای این کلاس
+    </p>
+</div>
+
+<!-- ===== Messages ===== -->
+{% for message in messages %}
+    <div class="alert alert-info shadow-sm">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<!-- ===== Exam List ===== -->
+<div class="row g-4">
+
+    {% for exam in exams %}
+        <div class="col-md-6 col-lg-4">
+            <div class="exam-card h-100">
+
+                <div class="exam-card-body">
+
+                    <h5 class="fw-bold mb-2">
+                        {{ exam.title }}
+                    </h5>
+
+                    {% if exam.start_at %}
+                        <p class="text-muted small mb-3">
+                            ⏱ شروع آزمون: {{ exam.start_at }}
+                        </p>
+                    {% endif %}
+
+                    <a href="{% url 'exams:start' class_group.id exam.id %}"
+                       class="btn btn-success w-100">
+                        شروع آزمون
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+    {% empty %}
+
+        <div class="col-12">
+            <div class="empty-state text-center p-5">
+                <div class="empty-icon mb-3">📭</div>
+                <h5>آزمونی برای این کلاس وجود ندارد</h5>
+                <p class="text-muted">
+                    در حال حاضر آزمون فعالی برای این کلاس تعریف نشده است.
+                </p>
+            </div>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

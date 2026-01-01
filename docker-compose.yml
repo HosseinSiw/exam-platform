@@ -1,0 +1,99 @@
+services:
+  backend:
+    build: .
+    container_name: django
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.example
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - "8005:8005" 
+    depends_on:
+      - redis
+
+     
+  db:
+    image: postgres:latest
+    container_name: db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env.example
+    # ports:
+    #   - "5432:5432"
+  
+  celery_worker:
+    build: .
+    container_name: celery_worker
+    command: celery -A app worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env.example
+    depends_on:
+      - redis
+      - db
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    command: celery -A app beat -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env.example
+    depends_on:
+      - redis
+      - db
+
+  flower:
+    build: .
+    container_name: flower
+    command: celery -A app flower --port=5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    env_file:
+      - .env.example
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    env_file:
+      - .env.example
+    ports:
+      - "5050:80"
+    
+
+volumes:
+  postgres_data:

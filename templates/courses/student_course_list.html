@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h3 class="fw-bold">📚 درس‌های من</h3>
+    <p class="text-muted">
+        لیست درس‌هایی که به آن‌ها دسترسی دارید
+    </p>
+</div>
+
+<div class="row g-4">
+
+    {% for course in courses %}
+        <div class="col-md-6 col-lg-4">
+            <div class="course-card h-100">
+
+                <div class="course-card-body">
+                    <h5 class="fw-bold mb-2">
+                        {{ course.title }}
+                    </h5>
+
+                    <p class="text-muted small mb-4">
+                        مشاهده آزمون‌ها و جزئیات این درس
+                    </p>
+
+                    <a href="{% url 'courses:detail' course.id %}"
+                       class="btn btn-primary w-100">
+                        ورود به درس
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    {% empty %}
+
+        <div class="col-12">
+            <div class="empty-state text-center p-5">
+                <div class="empty-icon mb-3">📭</div>
+                <h5 class="mb-2">درسی برای شما ثبت نشده است</h5>
+                <p class="text-muted">
+                    پس از ثبت‌نام در درس‌ها، آن‌ها را اینجا مشاهده خواهید کرد.
+                </p>
+            </div>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

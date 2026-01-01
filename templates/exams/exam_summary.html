@@ -1,0 +1,120 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- ===== Messages ===== -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} shadow-sm">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <!-- ===== Header ===== -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">{{ exam.title }}</h4>
+      <span class="badge bg-success fs-6">آزمون به پایان رسید</span>
+    </div>
+  </div>
+
+  <!-- ===== Summary Stats ===== -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-lg-2 col-md-4 col-6">
+      <div class="stat-box">
+        <small class="text-muted">نمره</small>
+        <strong>{{ student_exam.score|floatformat:2 }}</strong>
+      </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+      <div class="stat-box">
+        <small class="text-muted">درصد</small>
+        <strong>{{ pure_percentage }}٪</strong>
+      </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+      <div class="stat-box text-success">
+        <small>صحیح</small>
+        <strong>{{ correct_count }}</strong>
+      </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+      <div class="stat-box text-danger">
+        <small>غلط</small>
+        <strong>{{ wrong_count }}</strong>
+      </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4 col-6">
+      <div class="stat-box text-secondary">
+        <small>نزده</small>
+        <strong>{{ blank_count }}</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== Timing ===== -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h6 class="mb-3">⏱ اطلاعات زمانی</h6>
+      <ul class="list-unstyled mb-0 small">
+        <li>شروع: {{ student_exam.started_at|date:"Y/m/d H:i" }}</li>
+        <li>پایان: {{ student_exam.finished_at|date:"Y/m/d H:i" }}</li>
+        <li>
+          مدت پاسخ‌گویی:
+          {{ student_exam.finished_at|timesince:student_exam.started_at }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Answers ===== -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h6 class="mb-3">📋 جزئیات پاسخ‌ها</h6>
+
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered text-center align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>وضعیت</th>
+              <th>نمره</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for answer in answers %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+
+                <td>
+                  {% if answer.selected_option is None %}
+                    <span class="badge bg-secondary">نزده</span>
+                  {% elif answer.is_correct %}
+                    <span class="badge bg-success">صحیح</span>
+                  {% else %}
+                    <span class="badge bg-danger">غلط</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  {{ answer.awarded_score|floatformat:2 }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

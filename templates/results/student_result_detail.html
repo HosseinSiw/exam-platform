@@ -1,0 +1,103 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<h2>نتیجه آزمون: {{ student_exam.exam.title }}</h2>
+
+<p><strong>نمره:</strong> {{ student_exam.score }}</p>
+<p><strong>درصد:</strong> {{ percentage }}٪</p>
+
+<hr>
+
+<h5>نوار پیشرفت</h5>
+<!-- Progress Bar -->
+<div class="progress-bar
+    {% if percentage >= 70 %} success
+    {% elif percentage >= 40 %} warning
+    {% else %} danger {% endif %}"
+    style="width: {{ percentage }}%;">
+    %{{ percentage }}  درصد
+</div>
+<br>
+<hr>
+
+<h3>آمار پاسخ‌ها</h3>
+<ul>
+    <li>کل سوالات: {{ total_questions }}</li>
+    <li>✅ صحیح: {{ stats.correct_count }}</li>
+    <li>❌ غلط: {{ stats.wrong_count }}</li>
+    <li>⬜ خالی: {{ stats.blank_count }}</li>
+</ul>
+
+<h3>تحلیل پاسخ‌ها</h3>
+
+<canvas id="answersChart"></canvas>
+
+
+<a href="{% url 'results:student_results_list' %}">
+    ← بازگشت به لیست نتایج
+</a>
+{% endblock %}
+
+{% block extra_js %} 
+<script>
+ 
+const centerTextPlugin = {
+    id: 'centerText',
+    beforeDraw(chart) {
+        const { width, height, ctx } = chart;
+        const text = chart.config.options.centerText;
+
+        if (!text) return;
+
+        ctx.save();
+        ctx.font = 'bold 32px IRANSans, Arial';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, width / 2, height / 2);
+        ctx.restore();
+    }
+};
+
+const correct = {{ stats.correct_count }};
+const wrong   = {{ stats.wrong_count }};
+const blank   = {{ stats.blank_count }};
+
+const total = correct + wrong + blank;
+const percentage = total ? Math.round((correct / total) * 100) : 0;
+
+const ctx = document.getElementById('answersChart');
+
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['صحیح', 'غلط', 'خالی'],
+        datasets: [{
+            data: [correct, wrong, blank],
+            backgroundColor: ['#4CAF50', '#F44336', '#BDBDBD'],
+            borderWidth: 2,
+        }]
+    },
+    plugins: [centerTextPlugin],
+    options: {
+        cutout: '70%',
+        centerText: `${percentage}٪`,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const value = context.raw;
+                        const p = total ? ((value / total) * 100).toFixed(1) : 0;
+                        return `${context.label}: ${value} (${p}٪)`;
+                    }
+                }
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}
